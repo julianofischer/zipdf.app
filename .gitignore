@@ -1,0 +1,11 @@
+node_modules
+.next
+.wasm-build
+out
+dist
+.vercel
+*.log
+*.tsbuildinfo
+.env*
+!.env.example
+CONVERSA.md
