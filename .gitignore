@@ -9,3 +9,4 @@ dist
 .env*
 !.env.example
 CONVERSA.md
+medium-post-local-pdf-compression.md

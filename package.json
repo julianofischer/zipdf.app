@@ -15,6 +15,7 @@
   "dependencies": {
     "@okathira/ghostpdl-wasm": "^1.1.0",
     "@tailwindcss/forms": "^0.5.10",
+    "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.468.0",
     "next": "^16.2.6",
