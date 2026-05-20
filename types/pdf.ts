@@ -19,6 +19,7 @@ export type PdfJob = {
   progress: number;
   status: ProcessingStatus;
   error?: string;
+  notice?: string;
 };
 
 export type CompressionOptions = {

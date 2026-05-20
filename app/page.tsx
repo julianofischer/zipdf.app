@@ -10,7 +10,7 @@ import { useI18n } from "@/hooks/useI18n";
 import { usePdfCompressor } from "@/hooks/usePdfCompressor";
 
 export default function Home() {
-  const { job, stage, engine, selectedEngine, setSelectedEngine, level, setLevel, addFile, cancel, reset } =
+  const { job, stage, engine, selectedEngine, setSelectedEngine, level, setLevel, addFile, start, cancel, reset } =
     usePdfCompressor();
   const { locale, setLocale, t } = useI18n();
   const isBusy = job?.status === "processing" || job?.status === "validating";
@@ -23,7 +23,7 @@ export default function Home() {
             <span className="inline-flex size-9 items-center justify-center rounded-full bg-ink text-sm font-bold text-white">
               z
             </span>
-            <span className="text-sm font-semibold text-ink">zipdf.app</span>
+            <span className="text-sm font-semibold text-ink">zipdf</span>
           </a>
           <div className="flex items-center gap-2">
             <LanguageSwitcher locale={locale} onChange={setLocale} t={t.language} />
@@ -60,12 +60,20 @@ export default function Home() {
             <EngineSelector value={selectedEngine} onChange={setSelectedEngine} disabled={isBusy} t={t.engines} />
           </div>
           <div className="space-y-5">
-            <ProgressPanel job={job} stage={stage} engine={engine} onCancel={cancel} onReset={reset} t={t} />
+            <ProgressPanel
+              job={job}
+              stage={stage}
+              engine={engine}
+              onStart={start}
+              onCancel={cancel}
+              onReset={reset}
+              t={t}
+            />
           </div>
         </section>
 
         <footer className="flex flex-col gap-2 border-t border-black/10 py-6 text-sm text-black/56 sm:flex-row sm:items-center sm:justify-between">
-          <p>&copy; {new Date().getFullYear()} zipdf.app</p>
+          <p>&copy; {new Date().getFullYear()} zipdf</p>
           <p>
             {t.footer.developedBy}{" "}
             <a

@@ -56,8 +56,8 @@ async function compressWithJavascript(
   // fully client-side and often reduces PDFs by removing duplicated structure
   // and saving with object streams. Drop a real QPDF/Ghostscript WASM build into
   // /public/wasm for image-heavy compression.
-  pdf.setProducer("zipdf.app local browser compressor");
-  pdf.setCreator("zipdf.app");
+  pdf.setProducer("zipdf local browser compressor");
+  pdf.setCreator("zipdf");
 
   const objectStreams = options.level !== "quality";
   const addDefaultPage = false;

@@ -4,6 +4,7 @@ import type { Locale } from "./config";
 export type StageKey =
   | "waiting"
   | "validating"
+  | "ready"
   | "rejected"
   | "sendingToWorker"
   | "preparingEngine"
@@ -20,6 +21,7 @@ export type StageKey =
   | "cancelled";
 
 export type ValidationKey = "selectValidPdf" | "pdfOnly" | "emptyPdf" | "tooLarge" | "invalidPdf";
+export type NoticeKey = "outputLarger";
 
 type PresetCopy = {
   label: string;
@@ -62,6 +64,8 @@ export type Dictionary = {
     reduction: string;
     time: string;
     cancel: string;
+    start: string;
+    recompress: string;
     download: string;
     newPdf: string;
     processingHint: string;
@@ -78,13 +82,14 @@ export type Dictionary = {
   };
   stages: Record<StageKey, string>;
   validation: Record<ValidationKey, string>;
+  notices: Record<NoticeKey, string>;
   outputSuffix: string;
 };
 
 export const dictionaries: Record<Locale, Dictionary> = {
   "pt-BR": {
     meta: {
-      title: "zipdf.app - Compressão privada de PDF",
+      title: "zipdf - Compressão privada de PDF",
       description: "Compacte PDFs localmente no navegador. Nenhum arquivo é enviado para servidores."
     },
     hero: {
@@ -153,6 +158,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       reduction: "Redução",
       time: "Tempo",
       cancel: "Cancelar",
+      start: "Iniciar compressão",
+      recompress: "Testar nova compressão",
       download: "Baixar PDF compactado",
       newPdf: "Novo PDF",
       processingHint: "Processando localmente. Mantenha esta aba aberta até a compactação terminar.",
@@ -171,6 +178,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     stages: {
       waiting: "Aguardando PDF",
       validating: "Validando PDF",
+      ready: "PDF pronto para compactar",
       rejected: "Arquivo recusado",
       sendingToWorker: "Enviando para worker local",
       preparingEngine: "Preparando motor local",
@@ -193,11 +201,15 @@ export const dictionaries: Record<Locale, Dictionary> = {
       tooLarge: "Este PDF excede o limite local recomendado de 250 MB.",
       invalidPdf: "O arquivo não parece ser um PDF válido."
     },
+    notices: {
+      outputLarger:
+        "Esta configuração gerou um PDF maior que o original. Mantivemos o arquivo original como melhor resultado; tente Ghostscript com máxima compressão para PDFs com muitas imagens."
+    },
     outputSuffix: "compactado"
   },
   en: {
     meta: {
-      title: "zipdf.app - Private PDF compression",
+      title: "zipdf - Private PDF compression",
       description: "Compress PDFs locally in your browser. No file is uploaded to servers."
     },
     hero: {
@@ -266,6 +278,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       reduction: "Reduction",
       time: "Time",
       cancel: "Cancel",
+      start: "Start compression",
+      recompress: "Start compression",
       download: "Download compressed PDF",
       newPdf: "New PDF",
       processingHint: "Processing locally. Keep this tab open until compression finishes.",
@@ -284,6 +298,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     stages: {
       waiting: "Waiting for PDF",
       validating: "Validating PDF",
+      ready: "PDF ready to compress",
       rejected: "File rejected",
       sendingToWorker: "Sending to local worker",
       preparingEngine: "Preparing local engine",
@@ -305,6 +320,10 @@ export const dictionaries: Record<Locale, Dictionary> = {
       emptyPdf: "The PDF is empty.",
       tooLarge: "This PDF exceeds the recommended local limit of 250 MB.",
       invalidPdf: "This file does not look like a valid PDF."
+    },
+    notices: {
+      outputLarger:
+        "This setting created a PDF larger than the original. We kept the original as the best result; try Ghostscript with maximum compression for image-heavy PDFs."
     },
     outputSuffix: "compressed"
   }

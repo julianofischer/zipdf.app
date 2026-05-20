@@ -45,7 +45,10 @@ export function Dropzone({ onFile, disabled, t, privacyText }: Props) {
         type="file"
         accept="application/pdf,.pdf"
         className="sr-only"
-        onChange={(event) => pickFirstPdf(event.target.files)}
+        onChange={(event) => {
+          pickFirstPdf(event.target.files);
+          event.currentTarget.value = "";
+        }}
         disabled={disabled}
         aria-label={t.inputLabel}
       />

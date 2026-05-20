@@ -1,4 +1,4 @@
-# zipdf.app
+# zipdf
 
 Sistema web moderno para compactação de PDFs com processamento 100% local no navegador. O arquivo não é enviado para servidores, não é armazenado e a UI permanece responsiva graças ao uso de Web Worker.
 
@@ -35,11 +35,13 @@ npm run build
 
 1. Usuário seleciona ou arrasta um PDF.
 2. O app valida extensão, MIME, assinatura `%PDF-`, tamanho e arquivo vazio.
-3. O arquivo é enviado por transferência de `ArrayBuffer` para um Web Worker local.
-4. O worker executa a engine selecionada: QPDF WASM, Ghostscript WASM ou JavaScript.
-5. Se QPDF WASM for selecionado e não carregar, o app usa JavaScript como fallback local.
-6. O resultado volta para a UI sem upload, armazenamento ou backend.
-7. A UI exibe tamanho original, tamanho final, redução, tempo, progresso, erros e download.
+3. A UI exibe o PDF selecionado e aguarda o usuário clicar em iniciar compressão.
+4. O arquivo é enviado por transferência de `ArrayBuffer` para um Web Worker local.
+5. O worker executa a engine selecionada: QPDF WASM, Ghostscript WASM ou JavaScript.
+6. Se QPDF WASM for selecionado e não carregar, o app usa JavaScript como fallback local.
+7. O resultado volta para a UI sem upload, armazenamento ou backend.
+8. A UI exibe tamanho original, tamanho final, redução, tempo, progresso, erros e download.
+9. O usuário pode alterar engine ou nível e testar outra compressão no mesmo PDF sem selecionar o arquivo novamente.
 
 ## Internacionalização
 
@@ -88,6 +90,8 @@ Mesmo assim, `Balanceado` e `Máxima compressão` podem gerar arquivos do mesmo 
 
 Para PDFs compostos majoritariamente por imagens, como apresentações exportadas para PDF, a maior redução normalmente exige downsample de resolução. QPDF recomprime imagens, mas não rasteriza páginas nem reduz DPI como Ghostscript.
 
+Algumas combinações, especialmente QPDF em PDFs de slides já comprimidos, podem gerar um arquivo maior que o original. Nesses casos, a UI descarta o resultado maior, mantém o PDF original como melhor resultado e sugere testar outra engine/preset.
+
 Com Ghostscript WASM ativo, os presets usam:
 
 - Alta qualidade: `PDFSETTINGS=/printer`, imagens coloridas/cinza em 300 DPI.
@@ -95,6 +99,8 @@ Com Ghostscript WASM ativo, os presets usam:
 - Máxima compressão: padrão atual. `PDFSETTINGS=/screen`, imagens coloridas/cinza em 96 DPI.
 
 Durante a execução do Ghostscript, o motor WASM roda de forma síncrona dentro do worker. Por isso, a UI exibe tempo em tempo real, mensagem de processamento e progresso estimado até a etapa finalizar.
+
+O cancelamento de QPDF/Ghostscript encerra o Web Worker em execução e cria um worker novo. Isso interrompe motores WASM síncronos de forma confiável e mantém o PDF selecionado pronto para outra tentativa.
 
 ### Build do QPDF WASM
 

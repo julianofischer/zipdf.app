@@ -1,8 +1,8 @@
 "use client";
 
-import { Download, RotateCcw, Square } from "lucide-react";
+import { Download, Play, RotateCcw, Square } from "lucide-react";
 import { useEffect, useState } from "react";
-import type { Dictionary, StageKey, ValidationKey } from "@/i18n/dictionaries";
+import type { Dictionary, NoticeKey, StageKey, ValidationKey } from "@/i18n/dictionaries";
 import type { PdfJob } from "@/types/pdf";
 import { buildOutputName } from "@/utils/file-validation";
 import { formatBytes, formatDuration, formatPercent } from "@/utils/format";
@@ -13,15 +13,19 @@ type Props = {
   job: PdfJob | null;
   stage: StageKey;
   engine: PdfEngine | null;
+  onStart: () => void;
   onCancel: () => void;
   onReset: () => void;
   t: Dictionary;
 };
 
-export function ProgressPanel({ job, stage, engine, onCancel, onReset, t }: Props) {
+export function ProgressPanel({ job, stage, engine, onStart, onCancel, onReset, t }: Props) {
   const isProcessing = job?.status === "processing" || job?.status === "validating";
+  const isReady = job?.status === "idle";
   const isDone = job?.status === "completed" && job.outputBlob;
+  const canStart = isReady || isDone;
   const errorText = job?.error ? t.validation[job.error as ValidationKey] ?? job.error : null;
+  const noticeText = job?.notice ? t.notices[job.notice as NoticeKey] ?? job.notice : null;
   const [now, setNow] = useState(0);
   const liveElapsedMs = isProcessing && job?.startedAt && now > 0 ? now - job.startedAt : job?.elapsedMs;
 
@@ -72,6 +76,12 @@ export function ProgressPanel({ job, stage, engine, onCancel, onReset, t }: Prop
         </p>
       ) : null}
 
+      {noticeText ? (
+        <p role="status" className="mt-4 rounded-lg border border-black/10 bg-black/[0.025] px-4 py-3 text-sm leading-6 text-black/62">
+          {noticeText}
+        </p>
+      ) : null}
+
       {job?.status === "cancelled" ? (
         <p role="status" className="mt-4 rounded-lg border border-black/10 px-4 py-3 text-sm text-black/62">
           {t.progress.cancelledDescription}
@@ -79,6 +89,17 @@ export function ProgressPanel({ job, stage, engine, onCancel, onReset, t }: Prop
       ) : null}
 
       <div className="mt-5 flex flex-wrap gap-3">
+        {canStart ? (
+          <button
+            type="button"
+            onClick={onStart}
+            className="inline-flex items-center gap-2 rounded-full bg-mint px-4 py-2 text-sm font-semibold text-white transition hover:bg-mint/90 focus:outline-none focus:ring-2 focus:ring-mint"
+          >
+            <Play aria-hidden="true" size={16} />
+            {isDone ? t.progress.recompress : t.progress.start}
+          </button>
+        ) : null}
+
         {isProcessing ? (
           <button
             type="button"
